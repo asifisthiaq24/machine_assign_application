@@ -1,0 +1,10 @@
+<div *ngIf="auth_bol">
+        <p *ngIf="auth_bol">home-page works!</p>
+        <button type="submit" (click)="logOut()">Logout</button>  
+</div>
+<div *ngIf="!auth_bol">
+        <p *ngIf="!auth_bol">Must Login !</p>
+        <a mat-button routerLink="/login" routerLinkActive="active">Log in</a>
+</div>
+
+<router-outlet></router-outlet>

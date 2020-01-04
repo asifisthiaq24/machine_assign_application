@@ -1,1 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+/* html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
+html,
+body {
+	height: 100%;
+	margin: 0;
+    padding: 0;
+}
+
+body {
+    background-image: url();
+    background-color: #fafafa;
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+	min-height: 100vh;
+	font-family: 'Roboto', sans-serif;
+}
+/*
+https://cdn.hipwallpaper.com/i/31/76/E8FiYD.jpg
+https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png
+*/
