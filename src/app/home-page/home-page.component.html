@@ -1,10 +1,70 @@
-<div *ngIf="auth_bol">
-        <p *ngIf="auth_bol">home-page works!</p>
-        <button type="submit" (click)="logOut()">Logout</button>  
+<div [hidden]="!auth_bol">
+    <div class="sidenav">
+        <a href="/home" class="text-style">Home</a>
+        <hr>
+        <a href="#" class="text-style">Operator List</a>
+        <hr>
+        <a href="#" class="text-style">Machine List</a>
+        <hr>
+        <a href="#" class="text-style">Machine assigned to operator list</a>
+        <hr>
+        <a href="#" class="text-style" style="color: red;" (click)="logOut()">Logout</a>
+    </div>
+    <div class="main">
+        <div [hidden]="!auth_bol" style="margin:2%;margin-top: 1%;">
+            <fieldset style="min-height:100px;">
+                <legend><b> Admin List </b> </legend>
+                <button style="float: right;" (click)="openDialog()" mat-stroked-button>
+                    Add New Admin
+                </button>
+                <li *ngIf="animal">
+                    You chose: <i>{{animal}}</i>
+                </li>
+                <!-- routerLink="/base/editUserDetails/" -->
+                <label> <br /> </label>
+                <label> <br /> </label>
+                <!---->
+                <div class="mat-elevation-z8" style="margin-top: 2%">
+                    <mat-form-field>
+                        <input matInput (keyup)="applyFilter2($event.target.value)" placeholder="Filter">
+                    </mat-form-field>
+                    <table mat-table [dataSource]="dataSource2" matSort class="mat-elevation-z8">
+                        <ng-container matColumnDef="username">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Username</th>
+                            <td mat-cell *matCellDef="let element"> {{element.username}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="role">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Role </th>
+                            <td mat-cell *matCellDef="let element"> {{element.role}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef> Actions </th>
+                            <td mat-cell *matCellDef="let element" class="action-link"
+                                style="min-width: 70px !important;">
+                                <button mat-mini-fab color="primary" matTooltip="Edit"
+                                    routerLink="/base/editUserDetails/{{element.userid}}">
+                                    <mat-icon>edit</mat-icon>
+                                </button> &nbsp;
+                                <button mat-mini-fab color="warn" matTooltip="Delete"
+                                    routerLink="/base/editUserDetails/{{element.userid}}">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+                    </table>
+                    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                </div>
+            </fieldset>
+
+        </div>
+        <!-- <button type="submit" (click)="logOut()">Logout</button> -->
+    </div>
 </div>
-<div *ngIf="!auth_bol">
-        <p *ngIf="!auth_bol">Must Login !</p>
-        <a mat-button routerLink="/login" routerLinkActive="active">Log in</a>
+<div style="margin-left:50%" [hidden]="auth_bol">
+        <p [hidden]="auth_bol">Must Login !</p>
+        <a  mat-button routerLink="/login" routerLinkActive="active">Log in</a>
 </div>
 
 <router-outlet></router-outlet>

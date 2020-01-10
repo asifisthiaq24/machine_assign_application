@@ -3,11 +3,13 @@ import { UserService } from '../user.service';
 import { User } from '../user'
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { GlobalVariablesService } from '../global-variables.service'
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  providers: [GlobalVariablesService]
 })
 export class LoginComponent implements OnInit {
 
@@ -17,10 +19,15 @@ export class LoginComponent implements OnInit {
   _users:User[];
   __users:any;
   loginMessageBol:Boolean=false;
+  welcomeMsg:any='';
+  message:string;
+
   // constructor(private userservice:UserService) { }
-  constructor(private http:HttpClient,private router: Router) { }
+  constructor(private http:HttpClient,private router: Router,private _gvs:GlobalVariablesService) { }
   ngOnInit() { 
     //this.getUsers();
+    this._gvs.currentMessage.subscribe(message => this.message = message)
+
   }
   // getUsers(){
   //   this.userservice.getUsersFromServer().subscribe(users=>this._users=users)
@@ -44,6 +51,7 @@ export class LoginComponent implements OnInit {
       if(this.loginMessage == 'Login successful.'){
         localStorage.setItem('accessToken',data.accessToken);
         localStorage.setItem('refreshToken',data.refreshToken);
+        this._gvs.changeMessage('Welcome, '+this.username)
         this.router.navigate(['/home']);
       }
       else{
@@ -52,6 +60,8 @@ export class LoginComponent implements OnInit {
       console.log(data)
     })
   }
+
+
 
 
 }

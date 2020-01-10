@@ -10,13 +10,20 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import {UserService} from './user.service';
-import { HomePageComponent } from './home-page/home-page.component';
+import { HomePageComponent,DialogOverviewExampleDialog } from './home-page/home-page.component';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSortModule} from '@angular/material/sort';
+import { MatTableModule } from '@angular/material'; 
+import { GlobalVariablesService } from './global-variables.service';
+import {MatDialogModule} from '@angular/material/dialog';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    HomePageComponent
+    HomePageComponent,
+    DialogOverviewExampleDialog
   ],
   imports: [
     BrowserModule,
@@ -26,9 +33,14 @@ import { HomePageComponent } from './home-page/home-page.component';
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatDialogModule
   ],
-  providers: [UserService],
+  entryComponents: [DialogOverviewExampleDialog],
+  providers: [UserService,GlobalVariablesService],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
