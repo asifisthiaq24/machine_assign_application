@@ -39,7 +39,7 @@ export interface UserI {
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.css'],
-  providers: [ GlobalVariablesService]
+  providers: [GlobalVariablesService]
 })
 export class HomePageComponent implements OnInit {
   animal: string;
@@ -150,12 +150,15 @@ export class HomePageComponent implements OnInit {
   }
   //username
   usernameFormControl = new FormControl('', [
-    Validators.required
+    Validators.required,
+    //Validators.pattern('[0-9]*')
+    Validators.pattern('^(?=.*[a-z])[a-z0-9]{4,20}$')
   ]);
   //password
   hide = true;
   passwordFormControl = new FormControl('', [
-    Validators.required
+    Validators.required,
+    Validators.pattern('.{6,}$')
   ]);
   //email
   emailFormControl = new FormControl('', [
@@ -180,27 +183,32 @@ export class HomePageComponent implements OnInit {
   myForm: any;
   alreadyExists: boolean = false;
   onSubmitModalForm() {
-    console.log(this.email)
-    let resp_post = this.http.post('http://localhost:3001/login/emailvalidation', { email: this.email })
-    resp_post.subscribe((data) => {
-      console.log(data);
-      this.alreadyExists = data.found;
-      if (!this.alreadyExists) {
-        let resp_post_submit = this.http.post('http://localhost:3001/login/insert', { username: this.username, password: this.password, email: this.email, role: this.selectedRole })
-        resp_post_submit.subscribe((data) => {
-          this.username = null;
-          this.password = null;
-          this.email = null;
-          console.log('submission succesful')
-          console.log(data)
-          this.modalRegisterForm.nativeElement.click();
-          //reloading page
-          this.userAuthorization();
-        }, (err) => { console.log(err) })
-      }
-      //this.modalRegisterForm.nativeElement.click();
-      //console.log(this.alreadyExists)
-    }, (err) => { console.log(err) })
+    if (this.email != undefined && this.username != undefined && this.password != undefined
+      && !this.emailFormControl.hasError('email')
+      && !this.usernameFormControl.hasError('pattern')
+      && !this.passwordFormControl.hasError('pattern')) {
+      let resp_post = this.http.post('http://localhost:3001/login/emailvalidation', { email: this.email })
+      resp_post.subscribe((data) => {
+        console.log(data);
+        this.alreadyExists = data.found;
+        if (!this.alreadyExists) {
+          let resp_post_submit = this.http.post('http://localhost:3001/login/insert', { username: this.username, password: this.password, email: this.email, role: this.selectedRole })
+          resp_post_submit.subscribe((data) => {
+            this.username = null;
+            this.password = null;
+            this.email = null;
+            console.log('submission succesful')
+            console.log(data)
+            this.modalRegisterForm.nativeElement.click();
+            //reloading page
+            this.userAuthorization();
+          }, (err) => { console.log(err) })
+        }
+        //this.modalRegisterForm.nativeElement.click();
+        //console.log(this.alreadyExists)
+      }, (err) => { console.log(err) })
+    }
+
   }
   changeEV() {
     this.alreadyExists = false;

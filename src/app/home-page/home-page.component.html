@@ -87,7 +87,7 @@
         <div class="modal-content">
             <div class="modal-header text-center">
                 <h4 class="text-style" style="color: teal;font-size: 25px;">Add New Admin</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"  #modalRegisterForm>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" #modalRegisterForm>
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -96,10 +96,22 @@
                     <div class="md-form mb-5">
                         <mat-form-field class="example-full-width">
                             <input matInput placeholder="Username" [formControl]="usernameFormControl"
-                                [errorStateMatcher]="matcher" [(ngModel)]="username">
+                                [errorStateMatcher]="matcher" [(ngModel)]="username" >
+                                <!-- pattern="^[a-z0-9_-]{8,15}$" -->
                             <mat-error *ngIf="usernameFormControl.hasError('required')">
                                 Username is <strong>required</strong>.
                             </mat-error>
+                            <mat-error *ngIf="usernameFormControl.hasError('pattern') && !usernameFormControl.hasError('required')">
+                                    Your username must contain only digits and lowercase letters.
+                                </mat-error>
+                            <!-- <div *ngIf="">
+                                Pattern Not valid
+                            </div> -->
+                            <!-- <span style="color: red;font-size: 10px;margin-top:0px"
+                                *ngIf="usernameFormControl.hasError('pattern') && !usernameFormControl.hasError('required')">
+                                Username must contain only digits and lowercase letters.
+                            </span> -->
+
                         </mat-form-field>
                     </div>
                     <div class="md-form mb-5">
@@ -114,7 +126,8 @@
                             <mat-error *ngIf="emailFormControl.hasError('required')">
                                 Email is <strong>required</strong>.
                             </mat-error>
-                            <span style="color: red;font-size: 10px;margin-top:0px" *ngIf="alreadyExists &&!emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+                            <span style="color: red;font-size: 10px;margin-top:0px"
+                                *ngIf="alreadyExists &&!emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
                                 Email already exists. Try another.
                             </span>
                         </mat-form-field>
@@ -123,7 +136,8 @@
                     <div class="md-form mb-5">
                         <mat-form-field>
                             <input matInput placeholder="Password" [type]="hide ? 'password' : 'text'"
-                                [formControl]="passwordFormControl" [errorStateMatcher]="matcher" [(ngModel)]="password">
+                                [formControl]="passwordFormControl" [errorStateMatcher]="matcher"
+                                [(ngModel)]="password">
                             <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
                                 [attr.aria-pressed]="hide">
                                 <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -131,6 +145,10 @@
                             <mat-error *ngIf="passwordFormControl.hasError('required')">
                                 Password is <strong>required</strong>.
                             </mat-error>
+                            <mat-error
+                                *ngIf="passwordFormControl.hasError('pattern') && !passwordFormControl.hasError('required')">
+                                Password must be atleast 6 characters.
+                        </mat-error>
                         </mat-form-field>
                     </div>
                     <!-- <div class="md-form mb-5">
@@ -147,7 +165,7 @@
                     <div class="md-form mb-5">
                         <mat-form-field>
                             <mat-label>Role</mat-label>
-                            <select disabled   matNativeControl [(ngModel)]="selectedRole" name="role">
+                            <select disabled matNativeControl [(ngModel)]="selectedRole" name="role">
                                 <!-- <option value="" selected>--Select--</option> -->
                                 <!-- <option value >--Select--</option> -->
                                 <option *ngFor="let role of roles" [value]="role.value">
