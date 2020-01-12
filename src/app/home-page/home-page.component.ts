@@ -42,7 +42,7 @@ export interface UserI {
   providers: [GlobalVariablesService]
 })
 export class HomePageComponent implements OnInit {
-  isAdmin:boolean=true;
+  isAdmin:boolean=false;
   animal: string;
   name: string;
   welcomeMsg: any = '';
@@ -81,6 +81,13 @@ export class HomePageComponent implements OnInit {
     // }, (err) => { console.log(err) })
   }
   userAuthorization() {
+    let resp_get_role = this.http.get('http://localhost:3001/login/getrole/'+localStorage.getItem('uid'))
+    resp_get_role.subscribe((data) => {
+      console.log(data);
+      if(data.role=='admin'){
+        this.isAdmin = true;
+      }
+    }, (err) => { console.log(err) })
     let accessToken = localStorage.getItem('accessToken')
     let httpOptions = {
       headers: new HttpHeaders({
@@ -145,7 +152,7 @@ export class HomePageComponent implements OnInit {
   logOut() {
     localStorage.setItem('accessToken', '');
     localStorage.setItem('refreshToken', '');
-    localStorage.setItem('un', '');
+    localStorage.setItem('uid', '');
     this.router.navigate(['/login']);
   }
   applyFilter2(filterValue: string) {

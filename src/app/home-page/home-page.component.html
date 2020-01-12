@@ -69,11 +69,6 @@
             <!-- <button type="submit" (click)="logOut()">Logout</button> -->
         </div>
     </div>
-
-    <div style="margin-left:50%" [hidden]="auth_bol">
-        <p [hidden]="auth_bol">Must Login !</p>
-        <a mat-button routerLink="/login" routerLinkActive="active">Log in</a>
-    </div>
     <!--modal start-->
     <div class="modal fade" id="modalRegisterForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
         aria-hidden="true">
@@ -288,5 +283,9 @@
         </div>
     </div>
     <!-- edit modal end-->
+</div>
+<div style="margin-left:35%" [hidden]="isAdmin">
+    <h4>Must Login to continue!</h4>
+    <a mat-button routerLink="/login" routerLinkActive="active">Log in</a>
 </div>
 <router-outlet></router-outlet>

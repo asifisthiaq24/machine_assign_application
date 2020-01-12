@@ -51,6 +51,7 @@ export class LoginComponent implements OnInit {
       if(this.loginMessage == 'Login successful.'){
         localStorage.setItem('accessToken',data.accessToken);
         localStorage.setItem('refreshToken',data.refreshToken);
+        localStorage.setItem('uid',data.id);
         this._gvs.changeMessage('Welcome, '+this.username)
         this.router.navigate(['/home']);
       }
