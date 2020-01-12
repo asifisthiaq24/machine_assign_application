@@ -3,7 +3,7 @@
         <div class="sidenav">
             <a href="/home" class="text-style">Home</a>
             <hr>
-            <a href="#" class="text-style">Operator List</a>
+            <a href="/operatorlist" class="text-style">Operator List</a>
             <hr>
             <a href="#" class="text-style">Machine List</a>
             <hr>
@@ -284,8 +284,8 @@
     </div>
     <!-- edit modal end-->
 </div>
-<div style="margin-left:35%" [hidden]="isAdmin">
-    <h4>Must Login to continue!</h4>
-    <a mat-button routerLink="/login" routerLinkActive="active">Log in</a>
-</div>
+<div style="margin-left:50%" [hidden]="isAdmin">
+        <p class="text-style">Must Login to continue!</p>
+        <a mat-button routerLink="/login" routerLinkActive="active">Log in</a>
+    </div>
 <router-outlet></router-outlet>

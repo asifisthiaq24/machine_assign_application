@@ -36,12 +36,12 @@ export interface UserI {
 }
 
 @Component({
-  selector: 'app-home-page',
-  templateUrl: './home-page.component.html',
-  styleUrls: ['./home-page.component.css'],
-  providers: [GlobalVariablesService]
+  selector: 'app-operator-list',
+  templateUrl: './operator-list.component.html',
+  styleUrls: ['./operator-list.component.css']
 })
-export class HomePageComponent implements OnInit {
+export class OperatorListComponent implements OnInit {
+
   isAdmin:boolean=false;
   animal: string;
   name: string;
@@ -101,7 +101,7 @@ export class HomePageComponent implements OnInit {
       console.log('access token dia login hoise')
       //-----
       if (this.auth_bol) {
-        let resp_get = this.http.get('http://localhost:3001/login/', httpOptions)
+        let resp_get = this.http.get('http://localhost:3001/login/operator/', httpOptions)
         resp_get.subscribe((data) => {
           console.log('from access token')
           console.log(data);
@@ -130,7 +130,7 @@ export class HomePageComponent implements OnInit {
           console.log('refresh token dia login hoise')
           //-----
           if (this.auth_bol) {
-            let resp_get = this.http.get('http://localhost:3001/login/', httpOptions)
+            let resp_get = this.http.get('http://localhost:3001/login/operator/', httpOptions)
             resp_get.subscribe((data) => {
               console.log('from refresh token')
               console.log(data);
@@ -177,7 +177,7 @@ export class HomePageComponent implements OnInit {
   ]);
   matcher = new MyErrorStateMatcher();
   //select role
-  selectedRole: string = 'admin';
+  selectedRole: string = 'operator';
 
   roles: Role[] = [
     { value: 'admin', viewValue: 'Admin' },
@@ -245,7 +245,7 @@ export class HomePageComponent implements OnInit {
   ]);
   //matcher = new MyErrorStateMatcher();
   //select role
-  selectedRoleE: string = 'admin';
+  selectedRoleE: string = 'operator';
 
   rolesE: Role[] = [
     { value: 'admin', viewValue: 'Admin' },
@@ -325,6 +325,7 @@ export class HomePageComponent implements OnInit {
         }
       }
       else {
+        console.log('----------akhane dhukse email check er jonno')
         if (this.emailE != undefined && this.usernameE != undefined
           && !this.emailEFormControl.hasError('email')
           && !this.usernameEFormControl.hasError('pattern')) {
@@ -333,6 +334,7 @@ export class HomePageComponent implements OnInit {
             console.log(data);
             this.alreadyExistsE = data.found;
             if (!this.alreadyExistsE) {
+
               let resp_post_submit_edit = this.http.patch('http://localhost:3001/login/updateuser/' + this.tempID, { username: this.usernameE, password: 'empty', email: this.emailE, role: this.selectedRoleE })
               resp_post_submit_edit.subscribe((data) => {
                 this.usernameE = null;
@@ -357,7 +359,7 @@ export class HomePageComponent implements OnInit {
   tempID: string;
   getValueForEdit(_id) {
     this.alreadyExistsE=false;
-    let resp_post = this.http.post('http://localhost:3001/login/getuser', { id: _id, role: 'admin' })
+    let resp_post = this.http.post('http://localhost:3001/login/getuser', { id: _id, role: 'operator' })
     resp_post.subscribe((data) => {
       this.usernameE = data[0].username;
       this.tempUsername = data[0].email;

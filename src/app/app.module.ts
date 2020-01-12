@@ -18,13 +18,15 @@ import { GlobalVariablesService } from './global-variables.service';
 import {MatDialogModule} from '@angular/material/dialog';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { OperatorListComponent } from './operator-list/operator-list.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    HomePageComponent
+    HomePageComponent,
+    OperatorListComponent
   ],
   imports: [
     BrowserModule,

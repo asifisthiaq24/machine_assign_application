@@ -1,0 +1,89 @@
+.sidenav {
+    width: 170px;
+    position: fixed;
+    z-index: 1;
+    top: 100px;
+    left: 10px;
+    background: #eee;
+    overflow-x: hidden;
+    padding: 8px 0;
+  }
+  
+  .sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #444;
+    display: block;
+  }
+  
+  .sidenav a:hover {
+    /* color: #064579; */
+    color:#1976d2;
+    background-color: #cfd0d1;
+  }
+  
+  .main {
+    margin-left: 180px; /* Same width as the sidebar + left position in px */
+    font-size: 14px; /* Increased text to enable scrolling */
+    padding: 0px 10px;
+  }
+  
+  @media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+  }
+  
+  .text-style{
+      font-family:'Times New Roman', Times, serif;font-size: 15px;color: black;
+      text-shadow: .5px .5px .5px #000000;
+  }
+  
+  hr {
+      margin-top: 0rem;
+      margin-bottom: 0rem;
+      border: 0;
+      border-top: 1px solid rgba(0,0,0,.1);
+  }
+  
+  
+  table {
+    width: 100%;
+  }
+  .mat-row {
+    height: auto;
+  }
+  .mat-cell {
+    padding: 8px 150px 8px 0;
+  }
+  .mat-form-field {
+    font-size: 14px;
+    width: 100%;
+  }
+  
+  
+  fieldset {
+    font-family:'Times New Roman', Times, serif;
+    font-family: sans-serif;
+    border: 4px solid #cfd0d1;
+    /* border: 5px solid #1F497D; */
+    background: #fff;
+    border-radius: 5px;
+    padding: 45px;
+    padding-top: 0;
+  }
+  
+  fieldset legend {
+    width: 12%;
+    background: #fff;
+    text-shadow: .1px .1px .1px #000000;
+    border: 2px solid #cfd0d1;
+    color: #2d3438;
+    padding: 5px 10px ;
+    font-size: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 0 5px #fff;
+    margin-left: 20px;
+  }
+  /* for checkbox  */
+  /*  */
