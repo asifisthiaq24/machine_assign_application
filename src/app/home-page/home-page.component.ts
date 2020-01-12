@@ -42,6 +42,7 @@ export interface UserI {
   providers: [GlobalVariablesService]
 })
 export class HomePageComponent implements OnInit {
+  isAdmin:boolean=true;
   animal: string;
   name: string;
   welcomeMsg: any = '';
@@ -55,6 +56,8 @@ export class HomePageComponent implements OnInit {
   //table
   //async validation
   @ViewChild('modalRegisterForm') modalRegisterForm: ElementRef;
+  @ViewChild('modalRegisterFormEdit') modalRegisterFormEdit: ElementRef;
+
   //constructor
   constructor(private http: HttpClient, private router: Router, private _gvs: GlobalVariablesService, public dialog: MatDialog, private modalService: NgbModal) { }
   //init
@@ -152,7 +155,7 @@ export class HomePageComponent implements OnInit {
   usernameFormControl = new FormControl('', [
     Validators.required,
     //Validators.pattern('[0-9]*')
-    Validators.pattern('^(?=.*[a-z])[a-z0-9]{4,20}$')
+    Validators.pattern('^(?=.*[a-z])[a-z0-9]{4,}$')
   ]);
   //password
   hide = true;
@@ -200,6 +203,7 @@ export class HomePageComponent implements OnInit {
             console.log('submission succesful')
             console.log(data)
             this.modalRegisterForm.nativeElement.click();
+            
             //reloading page
             this.userAuthorization();
           }, (err) => { console.log(err) })
@@ -214,4 +218,151 @@ export class HomePageComponent implements OnInit {
     this.alreadyExists = false;
   }
 
+  //for edit()
+  //username
+  usernameEFormControl = new FormControl('', [
+    Validators.required,
+    //Validators.pattern('[0-9]*')
+    Validators.pattern('^(?=.*[a-z])[a-z0-9]{4,}$')
+  ]);
+  //password
+  hideE = true;
+  showPassField = false;
+  passwordEFormControl = new FormControl('', [
+    Validators.pattern('.{6,}$')
+  ]);
+  //email
+  emailEFormControl = new FormControl('', [
+    Validators.required,
+    Validators.email,
+  ]);
+  //matcher = new MyErrorStateMatcher();
+  //select role
+  selectedRoleE: string = 'admin';
+
+  rolesE: Role[] = [
+    { value: 'admin', viewValue: 'Admin' },
+    { value: 'operator', viewValue: 'Operator' }
+  ];
+  roleEFormControl = new FormControl('', [
+    Validators.required
+  ]);
+  //create admin -- modal submission
+  usernameE: string;
+  passwordE: string;
+  emailE: string;
+  myFormE: any;
+  alreadyExistsE: boolean = false;
+  onSubmitModalFormEdit() {
+    if (this.passwordE != undefined) {
+      if (this.usernameE == this.tempUsername) {
+        if (this.emailE != undefined && this.usernameE != undefined
+          && !this.emailEFormControl.hasError('email')
+          && !this.usernameEFormControl.hasError('pattern')
+          && !this.passwordEFormControl.hasError('pattern')) {
+          let resp_post_submit_edit = this.http.patch('http://localhost:3001/login/updateuser/' + this.tempID, { username: this.usernameE, password: this.passwordE, email: this.emailE, role: this.selectedRoleE, id: this.tempID })
+          resp_post_submit_edit.subscribe((data) => {
+            this.usernameE = null;
+            this.passwordE = null;
+            this.emailE = null;
+            this.tempUsername = null;
+            this.tempID = null;
+            this.modalRegisterFormEdit.nativeElement.click();
+            //reloading page
+            this.userAuthorization();
+          })
+        }
+      }
+      else {
+        if (this.emailE != undefined && this.usernameE != undefined
+          && !this.emailEFormControl.hasError('email')
+          && !this.usernameEFormControl.hasError('pattern')
+          && !this.passwordEFormControl.hasError('pattern')) {
+          let resp_post = this.http.post('http://localhost:3001/login/emailvalidation', { email: this.emailE })
+          resp_post.subscribe((data) => {
+            console.log(data);
+            this.alreadyExists = data.found;
+            if (!this.alreadyExistsE) {
+              let resp_post_submit_edit = this.http.patch('http://localhost:3001/login/updateuser/' + this.tempID, { username: this.usernameE, password: this.passwordE, email: this.emailE, role: this.selectedRoleE })
+              resp_post_submit_edit.subscribe((data) => {
+                this.usernameE = null;
+                this.passwordE = null;
+                this.emailE = null;
+                this.tempUsername = null;
+                this.tempID = null;
+                this.modalRegisterFormEdit.nativeElement.click();
+                //reloading page
+                this.userAuthorization();
+              })
+            }
+          }, (err) => { console.log(err) })
+        }
+      }
+    }
+    else{
+      if (this.usernameE == this.tempUsername) {
+        if (this.emailE != undefined && this.usernameE != undefined
+          && !this.emailEFormControl.hasError('email')
+          && !this.usernameEFormControl.hasError('pattern')) {
+          let resp_post_submit_edit = this.http.patch('http://localhost:3001/login/updateuser/' + this.tempID, { username: this.usernameE, password: 'empty', email: this.emailE, role: this.selectedRoleE, id: this.tempID })
+          resp_post_submit_edit.subscribe((data) => {
+            this.usernameE = null;
+            this.passwordE = null;
+            this.emailE = null;
+            this.tempUsername = null;
+            this.tempID = null;
+            this.modalRegisterFormEdit.nativeElement.click();
+            //reloading page
+            this.userAuthorization();
+          })
+        }
+      }
+      else {
+        if (this.emailE != undefined && this.usernameE != undefined
+          && !this.emailEFormControl.hasError('email')
+          && !this.usernameEFormControl.hasError('pattern')) {
+          let resp_post = this.http.post('http://localhost:3001/login/emailvalidation', { email: this.emailE })
+          resp_post.subscribe((data) => {
+            console.log(data);
+            this.alreadyExists = data.found;
+            if (!this.alreadyExistsE) {
+              let resp_post_submit_edit = this.http.patch('http://localhost:3001/login/updateuser/' + this.tempID, { username: this.usernameE, password: 'empty', email: this.emailE, role: this.selectedRoleE })
+              resp_post_submit_edit.subscribe((data) => {
+                this.usernameE = null;
+                this.passwordE = null;
+                this.emailE = null;
+                this.tempUsername = null;
+                this.tempID = null;
+                this.modalRegisterFormEdit.nativeElement.click();
+                //reloading page
+                this.userAuthorization();
+              })
+            }
+          }, (err) => { console.log(err) })
+        }
+      }
+    }
+  }
+  changeEVE() {
+    this.alreadyExistsE = false;
+  }
+  tempUsername: string;
+  tempID: string;
+  getValueForEdit(_id) {
+    let resp_post = this.http.post('http://localhost:3001/login/getuser', { id: _id, role: 'admin' })
+    resp_post.subscribe((data) => {
+      this.usernameE = data[0].username;
+      this.tempUsername = data[0].username;
+      this.tempID = _id;
+      //this.passwordE = '12345';
+      this.emailE = data[0].email;
+    }, (err) => { console.log(err) })
+  }
+  delete_user(_id) {
+    let resp_post = this.http.delete('http://localhost:3001/login/deleteuser/'+_id)
+    resp_post.subscribe((data) => {
+      console.log(data);
+      this.userAuthorization();
+    }, (err) => { console.log(err) })
+  }
 }

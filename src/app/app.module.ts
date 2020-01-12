@@ -17,6 +17,7 @@ import { MatTableModule } from '@angular/material';
 import { GlobalVariablesService } from './global-variables.service';
 import {MatDialogModule} from '@angular/material/dialog';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
     MatPaginatorModule,
     MatSortModule,
     MatDialogModule,
-    NgbModule
+    NgbModule,
+    MatCheckboxModule
   ],
   entryComponents: [],
   providers: [UserService,GlobalVariablesService],
