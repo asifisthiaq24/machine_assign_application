@@ -49,7 +49,7 @@ export class OperatorListComponent implements OnInit {
   auth_bol: Boolean = false;
   message: string;
   //table
-  displayedColumns2: string[] = ['username', 'email', 'role', 'action'];
+  displayedColumns2: string[] = ['username', 'email', '_id', 'action'];
   dataSource2: UserI[];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
