@@ -1,0 +1,152 @@
+<div [hidden]="!isAdmin">
+    <div [hidden]="!auth_bol">
+        <div class="sidenav">
+            <p>Welcome,<strong>{{helloMsg}}</strong></p>
+            <a href="/home" class="text-style">Home</a>
+            <hr>
+            <a href="/operatorlist" class="text-style">Operator List</a>
+            <hr>
+            <a href="/machinelist" class="text-style">Machine List</a>
+            <hr>
+            <a href="/mao" class="text-style">Machine assigned to operator list</a>
+            <hr>
+            <a href="#" class="text-style" style="color: red;" (click)="logOut()">Logout</a>
+        </div>
+        <div class="main">
+            <div [hidden]="!auth_bol" style="margin:2%;margin-top: 1%;">
+                <fieldset style="min-height:100px;">
+                    <legend><b> Machine List </b> </legend>
+                    <button style="float: right;" mat-stroked-button data-toggle="modal"
+                        data-target="#modalRegisterForm">
+                        Add New Machine
+                    </button>
+                    <li *ngIf="animal">
+                        You chose: <i>{{animal}}</i>
+                    </li>
+                    <!-- routerLink="/base/editUserDetails/" -->
+                    <label> <br /> </label>
+                    <label> <br /> </label>
+                    <!---->
+                    <div class="mat-elevation-z8" style="margin-top: 2%">
+                        <mat-form-field>
+                            <input matInput (keyup)="applyFilter2($event.target.value)" placeholder="Filter">
+                        </mat-form-field>
+                        <table mat-table [dataSource]="dataSource2" matSort class="mat-elevation-z8">
+                            <ng-container matColumnDef="name">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Machine Name</th>
+                                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="assigned">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Assigned</th>
+                                <td mat-cell *matCellDef="let element"> {{element.assigned}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="action">
+                                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                                <td mat-cell *matCellDef="let element" class="action-link"
+                                    style="min-width: 70px !important;">
+                                    <button mat-mini-fab color="primary" matTooltip="Edit"
+                                        (click)="getValueForEdit(element._id);"
+                                        data-toggle="modal" data-target="#modalRegisterFormEdit">
+                                        <mat-icon>edit</mat-icon>
+                                    </button> &nbsp;
+                                    <button mat-mini-fab color="warn" matTooltip="Delete"
+                                        (click)="delete_user(element._id)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+                        </table>
+                        <mat-paginator [pageSizeOptions]="[5, 10, 20,50]" showFirstLastButtons></mat-paginator>
+                    </div>
+                </fieldset>
+
+            </div>
+            <!-- <button type="submit" (click)="logOut()">Logout</button> -->
+        </div>
+    </div>
+    <!--modal start-->
+    <div class="modal fade" id="modalRegisterForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <!-- <form class="example-form">
+                    <mat-form-field class="example-full-width">
+                      <input matInput placeholder="Favorite food" value="Sushi">
+                    </mat-form-field>
+                  
+                    <mat-form-field class="example-full-width">
+                      <textarea matInput placeholder="Leave a comment"></textarea>
+                    </mat-form-field>
+                  </form> -->
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="text-style" style="color: teal;font-size: 25px;">Add New Machine</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" #modalRegisterForm>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body mx-3">
+                        <div class="md-form mb-5">
+                            <mat-form-field class="example-full-width">
+                                <input matInput placeholder="Machine Name" [formControl]="mnameFormControl"
+                                    [errorStateMatcher]="matcher" [(ngModel)]="mname">
+                                <mat-error *ngIf="mnameFormControl.hasError('required')">
+                                    Machine name is <strong>required</strong>.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button (click)="onSubmitModalForm()" class="btn btn-deep-orange" mat-stroked-button
+                            color="primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="text-center">
+            <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalRegisterForm">Launch
+                Modal Register Form</a>
+        </div> -->
+    <!--modal end-->
+    <!-- edit modal start-->
+    <div class="modal fade" id="modalRegisterFormEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="text-style" style="color: teal;font-size: 25px;">Edit Machine</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" #modalRegisterFormEdit>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body mx-3">
+                        <div class="md-form mb-5">
+                            <mat-form-field class="example-full-width">
+                                <input matInput placeholder="Machine Name" [formControl]="mnameEFormControl"
+                                    [errorStateMatcher]="matcher" [(ngModel)]="mnameE">
+                                <!-- pattern="^[a-z0-9_-]{8,15}$" -->
+                                <mat-error *ngIf="mnameEFormControl.hasError('required')">
+                                    Machine name is <strong>required</strong>.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button (click)="onSubmitModalFormEdit()" class="btn btn-deep-orange" mat-stroked-button
+                            color="primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- edit modal end-->
+</div>
+<div style="margin-left:50%" [hidden]="isAdmin">
+    <p class="text-style">Must Login to continue!</p>
+    <a mat-button routerLink="/login" routerLinkActive="active">Log in</a>
+</div>
+<router-outlet></router-outlet>

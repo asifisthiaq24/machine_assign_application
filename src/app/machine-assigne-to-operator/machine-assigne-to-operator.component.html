@@ -1,0 +1,209 @@
+<div [hidden]="!isAdmin">
+    <div [hidden]="!auth_bol">
+        <div class="sidenav">
+            <p>Welcome,<strong>{{helloMsg}}</strong></p>
+            <a href="/home" class="text-style">Home</a>
+            <hr>
+            <a href="/operatorlist" class="text-style">Operator List</a>
+            <hr>
+            <a href="/machinelist" class="text-style">Machine List</a>
+            <hr>
+            <a href="/mao" class="text-style">Machine assigned to operator list</a>
+            <hr>
+            <a href="#" class="text-style" style="color: red;" (click)="logOut()">Logout</a>
+        </div>
+        <div class="main">
+            <div [hidden]="!auth_bol" style="margin:2%;margin-top: 1%;">
+                <fieldset style="min-height:100px;">
+                    <legend><b>Assign Machine to Operator </b> </legend>
+                    <button style="float: right;" mat-stroked-button data-toggle="modal"
+                        data-target="#modalRegisterForm">
+                        Assign
+                    </button>
+                    <li *ngIf="animal">
+                        You chose: <i>{{animal}}</i>
+                    </li>
+                    <!-- routerLink="/base/editUserDetails/" -->
+                    <label> <br /> </label>
+                    <label> <br /> </label>
+                    <!---->
+                    <div class="mat-elevation-z8" style="margin-top: 2%">
+                        <mat-form-field>
+                            <input matInput (keyup)="applyFilter2($event.target.value)" placeholder="Filter">
+                        </mat-form-field>
+                        <table mat-table [dataSource]="dataSource2" matSort class="mat-elevation-z8">
+                            <ng-container matColumnDef="mid">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Machine Code</th>
+                                <td mat-cell *matCellDef="let element"> {{element.mid}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="oid">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Operator Code</th>
+                                <td mat-cell *matCellDef="let element"> {{element.oid}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="username">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Operator Name</th>
+                                <td mat-cell *matCellDef="let element"> {{element.username}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="schedule">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Schedule</th>
+                                <td mat-cell *matCellDef="let element"> {{sch[element.schedule]}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="activatedDate">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Activated Date</th>
+                                <td mat-cell *matCellDef="let element"> {{splitDate(element.activatedDate)}} </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+                        </table>
+                        <mat-paginator [pageSizeOptions]="[5, 10, 20,50]" showFirstLastButtons></mat-paginator>
+                    </div>
+                </fieldset>
+
+            </div>
+            <!-- <button type="submit" (click)="logOut()">Logout</button> -->
+        </div>
+    </div>
+    <!--modal start-->
+    <div class="modal fade" id="modalRegisterForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <!-- <form class="example-form">
+                        <mat-form-field class="example-full-width">
+                          <input matInput placeholder="Favorite food" value="Sushi">
+                        </mat-form-field>
+                      
+                        <mat-form-field class="example-full-width">
+                          <textarea matInput placeholder="Leave a comment"></textarea>
+                        </mat-form-field>
+                      </form> -->
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="text-style" style="color: teal;font-size: 25px;">Assign Machine to Operator</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" #modalRegisterForm>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body mx-3">
+
+                        <div class="modal-body mb-5">
+                            <mat-form-field class="example-full-width">
+
+                                <div class="input-group">
+                                    <input matInput [formControl]="dateFormControl" [errorStateMatcher]="matcher"
+                                        class="form-control" placeholder="Activated Date" name="dp"
+                                        (dateSelect)="changeEvent($event)" [(ngModel)]="model" ngbDatepicker
+                                        #d="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary calendar" (click)="d.toggle();"
+                                            type="button"></button>
+                                    </div>
+                                </div>
+                                <mat-error *ngIf="dateFormControl.hasError('required')">
+                                    Activated Date is <strong>required</strong>.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="md-form mb-5">
+                            <mat-form-field>
+                                <mat-label>Schedule</mat-label>
+                                <select (change)="changeSchedule($event)" [formControl]="scheduleFormControl"
+                                    [errorStateMatcher]="matcher" matNativeControl [(ngModel)]="selectedSchedule"
+                                    name="schedule">
+                                    <!-- <option value="" selected>--Select--</option> -->
+                                    <option value>--Select--</option>
+                                    <option *ngFor="let sc of scheduleOption" [value]="sc.value">
+                                        {{sc.viewValue}}
+                                    </option>
+                                </select>
+                                <mat-error *ngIf="scheduleFormControl.hasError('required')">
+                                    Schedule is <strong>required</strong>.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="md-form mb-5">
+                            <mat-form-field>
+                                <mat-label>Machine</mat-label>
+                                <select [formControl]="macFormControl" [errorStateMatcher]="matcher" matNativeControl
+                                    [(ngModel)]="selectedMac" name="schedule">
+                                    <!-- <option value="" selected>--Select--</option> -->
+                                    <option value>--Select--</option>
+                                    <option *ngFor="let m of macOption" [value]="m._id">
+                                        {{m.name}}
+                                    </option>
+                                </select>
+                                <mat-error *ngIf="macFormControl.hasError('required')">
+                                    Machine is <strong>required</strong>.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="md-form mb-5">
+                            <mat-form-field>
+                                <mat-label>Operator</mat-label>
+                                <select [formControl]="opFormControl" [errorStateMatcher]="matcher" matNativeControl
+                                    [(ngModel)]="selectedOp" name="schedule">
+                                    <!-- <option value="" selected>--Select--</option> -->
+                                    <option value>--Select--</option>
+                                    <option *ngFor="let o of opOption" [value]="o._id">
+                                        {{o.username}}
+                                    </option>
+                                </select>
+                                <mat-error *ngIf="opFormControl.hasError('required')">
+                                    Operator is <strong>required</strong>.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button (click)="onSubmitModalForm()" class="btn btn-deep-orange" mat-stroked-button
+                            color="primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="text-center">
+                <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalRegisterForm">Launch
+                    Modal Register Form</a>
+            </div> -->
+    <!--modal end-->
+    <!-- edit modal start-->
+    <div class="modal fade" id="modalRegisterFormEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="text-style" style="color: teal;font-size: 25px;">Edit Machine</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" #modalRegisterFormEdit>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body mx-3">
+                        <div class="md-form mb-5">
+                            <mat-form-field class="example-full-width">
+                                <input matInput placeholder="Machine Name" [formControl]="mnameEFormControl"
+                                    [errorStateMatcher]="matcher" [(ngModel)]="mnameE">
+                                <!-- pattern="^[a-z0-9_-]{8,15}$" -->
+                                <mat-error *ngIf="mnameEFormControl.hasError('required')">
+                                    Username is <strong>required</strong>.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button (click)="onSubmitModalFormEdit()" class="btn btn-deep-orange" mat-stroked-button
+                            color="primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- edit modal end-->
+</div>
+<div style="margin-left:50%" [hidden]="isAdmin">
+    <p class="text-style">Must Login to continue!</p>
+    <a mat-button routerLink="/login" routerLinkActive="active">Log in</a>
+</div>
+<router-outlet></router-outlet>

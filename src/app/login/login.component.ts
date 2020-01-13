@@ -52,6 +52,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('accessToken',data.accessToken);
         localStorage.setItem('refreshToken',data.refreshToken);
         localStorage.setItem('uid',data.id);
+        localStorage.setItem('uname',this.username);
         this._gvs.changeMessage('Welcome, '+this.username)
         this.router.navigate(['/home']);
       }

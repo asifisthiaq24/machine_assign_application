@@ -19,14 +19,18 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { OperatorListComponent } from './operator-list/operator-list.component';
-
+import { MachineListComponent } from './machine-list/machine-list.component';
+import { MachineAssigneToOperatorComponent } from './machine-assigne-to-operator/machine-assigne-to-operator.component';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomePageComponent,
-    OperatorListComponent
+    OperatorListComponent,
+    MachineListComponent,
+    MachineAssigneToOperatorComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +46,8 @@ import { OperatorListComponent } from './operator-list/operator-list.component';
     MatSortModule,
     MatDialogModule,
     NgbModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatDatepickerModule
   ],
   entryComponents: [],
   providers: [UserService,GlobalVariablesService],

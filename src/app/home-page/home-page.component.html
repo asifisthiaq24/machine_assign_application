@@ -1,13 +1,14 @@
 <div [hidden]="!isAdmin">
     <div [hidden]="!auth_bol">
         <div class="sidenav">
+            <p>Welcome,<strong>{{helloMsg}}</strong></p>
             <a href="/home" class="text-style">Home</a>
             <hr>
             <a href="/operatorlist" class="text-style">Operator List</a>
             <hr>
-            <a href="#" class="text-style">Machine List</a>
+            <a href="/machinelist" class="text-style">Machine List</a>
             <hr>
-            <a href="#" class="text-style">Machine assigned to operator list</a>
+            <a href="/mao" class="text-style">Machine assigned to operator list</a>
             <hr>
             <a href="#" class="text-style" style="color: red;" (click)="logOut()">Logout</a>
         </div>
@@ -39,10 +40,10 @@
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Email</th>
                                 <td mat-cell *matCellDef="let element"> {{element.email}} </td>
                             </ng-container>
-                            <ng-container matColumnDef="role">
+                            <!-- <ng-container matColumnDef="role">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Role </th>
                                 <td mat-cell *matCellDef="let element"> {{element.role}} </td>
-                            </ng-container>
+                            </ng-container> -->
                             <ng-container matColumnDef="action">
                                 <th mat-header-cell *matHeaderCellDef> Actions </th>
                                 <td mat-cell *matCellDef="let element" class="action-link"

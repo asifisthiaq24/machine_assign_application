@@ -62,6 +62,7 @@ export class OperatorListComponent implements OnInit {
   constructor(private http: HttpClient, private router: Router, private _gvs: GlobalVariablesService, public dialog: MatDialog, private modalService: NgbModal) { }
   //init
   ngOnInit() {
+    this.helloMsg = ' '+localStorage.getItem('uname')
     this._gvs.currentMessage.subscribe(message => this.message = message)
     this.userAuthorization();
     //let x = this.http.get<UserI[]>("http://localhost:3001/login/").pipe(tap(console.log));
@@ -153,6 +154,7 @@ export class OperatorListComponent implements OnInit {
     localStorage.setItem('accessToken', '');
     localStorage.setItem('refreshToken', '');
     localStorage.setItem('uid', '');
+    localStorage.setItem('uname','');
     this.router.navigate(['/login']);
   }
   applyFilter2(filterValue: string) {
