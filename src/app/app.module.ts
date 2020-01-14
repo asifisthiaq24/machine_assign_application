@@ -22,6 +22,7 @@ import { OperatorListComponent } from './operator-list/operator-list.component';
 import { MachineListComponent } from './machine-list/machine-list.component';
 import { MachineAssigneToOperatorComponent } from './machine-assigne-to-operator/machine-assigne-to-operator.component';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import { OperatorHomeComponent } from './operator-home/operator-home.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
     HomePageComponent,
     OperatorListComponent,
     MachineListComponent,
-    MachineAssigneToOperatorComponent
+    MachineAssigneToOperatorComponent,
+    OperatorHomeComponent
   ],
   imports: [
     BrowserModule,

@@ -43,6 +43,7 @@ export interface UserI {
 })
 export class HomePageComponent implements OnInit {
   isAdmin:boolean=false;
+  isOperator:boolean=false;
   animal: string;
   name: string;
   welcomeMsg: any = '';
@@ -56,8 +57,8 @@ export class HomePageComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   //table
   //async validation
-  @ViewChild('modalRegisterForm') modalRegisterForm: ElementRef;
-  @ViewChild('modalRegisterFormEdit') modalRegisterFormEdit: ElementRef;
+  @ViewChild('modalRegisterForm',{static:false}) modalRegisterForm: ElementRef;
+  @ViewChild('modalRegisterFormEdit',{static:false}) modalRegisterFormEdit: ElementRef;
 
   //constructor
   constructor(private http: HttpClient, private router: Router, private _gvs: GlobalVariablesService, public dialog: MatDialog, private modalService: NgbModal) { }
@@ -84,10 +85,13 @@ export class HomePageComponent implements OnInit {
   }
   userAuthorization() {
     let resp_get_role = this.http.get('http://localhost:3001/login/getrole/'+localStorage.getItem('uid'))
-    resp_get_role.subscribe((data) => {
+    resp_get_role.subscribe((data:any) => {
       console.log(data);
       if(data.role=='admin'){
         this.isAdmin = true;
+      }
+      else if(data.role == 'operator'){
+        this.isOperator = true;
       }
     }, (err) => { console.log(err) })
     let accessToken = localStorage.getItem('accessToken')
@@ -104,7 +108,7 @@ export class HomePageComponent implements OnInit {
       //-----
       if (this.auth_bol) {
         let resp_get = this.http.get('http://localhost:3001/login/', httpOptions)
-        resp_get.subscribe((data) => {
+        resp_get.subscribe((data:any) => {
           console.log('from access token')
           console.log(data);
           this.dataSource2 = new MatTableDataSource<UserI>(data);
@@ -117,7 +121,7 @@ export class HomePageComponent implements OnInit {
       console.log(err.statusText)
       const refreshToken = localStorage.getItem('refreshToken')
       let resp_post_rft = this.http.post('http://localhost:3001/login/token', { token: refreshToken })
-      resp_post_rft.subscribe((data) => {
+      resp_post_rft.subscribe((data:any) => {
         accessToken = data.accessToken;
         localStorage.setItem('accessToken', accessToken);
         httpOptions = {
@@ -133,7 +137,7 @@ export class HomePageComponent implements OnInit {
           //-----
           if (this.auth_bol) {
             let resp_get = this.http.get('http://localhost:3001/login/', httpOptions)
-            resp_get.subscribe((data) => {
+            resp_get.subscribe((data:any) => {
               console.log('from refresh token')
               console.log(data);
               this.dataSource2 = new MatTableDataSource<UserI>(data);
@@ -375,5 +379,9 @@ export class HomePageComponent implements OnInit {
       console.log(data);
       this.userAuthorization();
     }, (err) => { console.log(err) })
+  }
+  status(){
+    if(this.isAdmin==false && this.isOperator==false) return false;
+    else return true;
   }
 }

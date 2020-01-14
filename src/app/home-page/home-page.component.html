@@ -285,8 +285,13 @@
     </div>
     <!-- edit modal end-->
 </div>
-<div style="margin-left:50%" [hidden]="isAdmin">
-        <p class="text-style">Must Login to continue!</p>
-        <a mat-button routerLink="/login" routerLinkActive="active">Log in</a>
-    </div>
+<div style="margin-left:50%" [hidden]="status()">
+    <p class="text-style">Must Login to continue!</p>
+    <a mat-button routerLink="/login" routerLinkActive="active">Log in</a>
+</div>
+<div [hidden]="!isOperator">
+    <app-operator-home></app-operator-home>
+</div>
+
+
 <router-outlet></router-outlet>

@@ -1,0 +1,194 @@
+<div [hidden]="!auth_bol">
+    <div class="sidenav">
+        <p>Welcome,<strong>{{helloMsg}}</strong></p>
+        <a href="/home" class="text-style">Home</a>
+        <hr>
+        <button (click)="getValueForEdit(); cngPass.checked = false" style="text-align: left;min-width:180px;" class="text-style" mat-button 
+        data-toggle="modal" data-target="#modalRegisterFormEdit">
+            Edit Info
+        </button>
+        <!-- <a  (click)="getValueForEdit()" class="text-style" type="button">Edit Info</a> -->
+        <hr>
+        <a href="#" class="text-style" style="color: red;" (click)="logOut()">Logout</a>
+    </div>
+    <div class="main">
+        <div [hidden]="!auth_bol" style="margin:2%;margin-top: 1%;">
+            <fieldset style="min-height:100px;">
+                <legend><b>Report</b> </legend>
+                <div class="row" style="margin-top: 1%;">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input class="form-control" placeholder="From" name="dp" [(ngModel)]="model" ngbDatepicker
+                                #d="ngbDatepicker">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary calendar" (click)="d.toggle();"
+                                    type="button"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input class="form-control" placeholder="To" name="dp2" [(ngModel)]="model2" ngbDatepicker
+                                #dd="ngbDatepicker">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary calendar" (click)="dd.toggle();"
+                                    type="button"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <button mat-mini-fab color="primary" matTooltip="Filter">
+                                    <mat-icon>search</mat-icon>
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <button mat-mini-fab color="warn" matTooltip="Reset">
+                                    <mat-icon>cached</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- <button style="float: right;" mat-stroked-button data-toggle="modal"
+                            data-target="#modalRegisterForm">
+                            Assign
+                        </button> -->
+                <!-- routerLink="/base/editUserDetails/" -->
+                <label> <br /> </label>
+                <label> <br /> </label>
+                <!---->
+                <div class="mat-elevation-z8" style="margin-top: 2%">
+                    <mat-form-field>
+                        <input matInput (keyup)="applyFilter2($event.target.value)" placeholder="Filter">
+                    </mat-form-field>
+                    <table mat-table [dataSource]="dataSource2" matSort class="mat-elevation-z8">
+                        <ng-container matColumnDef="mid">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Machine Code</th>
+                            <td mat-cell *matCellDef="let element"> {{element.mid}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="oid">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Operator Code</th>
+                            <td mat-cell *matCellDef="let element"> {{element.oid}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="username">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Operator Name</th>
+                            <td mat-cell *matCellDef="let element"> {{element.username}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="schedule">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Schedule</th>
+                            <td mat-cell *matCellDef="let element"> {{sch[element.schedule]}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="activatedDate">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Activated Date</th>
+                            <td mat-cell *matCellDef="let element"> {{splitDate(element.activatedDate)}} </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+                    </table>
+                    <mat-paginator [pageSizeOptions]="[5, 10, 20,50]" showFirstLastButtons></mat-paginator>
+                </div>
+            </fieldset>
+
+        </div>
+    </div>
+</div>
+<!-- edit modal start-->
+<div class="modal fade" id="modalRegisterFormEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="text-style" style="color: teal;font-size: 25px;">Edit Operator</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" #modalRegisterFormEdit>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form>
+                <div class="modal-body mx-3">
+                    <div class="md-form mb-5">
+                        <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Username" [formControl]="usernameEFormControl"
+                                [errorStateMatcher]="matcher" [(ngModel)]="usernameE">
+                            <!-- pattern="^[a-z0-9_-]{8,15}$" -->
+                            <mat-error *ngIf="usernameEFormControl.hasError('required')">
+                                Username is <strong>required</strong>.
+                            </mat-error>
+                            <mat-error
+                                *ngIf="usernameEFormControl.hasError('pattern') && !usernameEFormControl.hasError('required')">
+                                Your username must contain only digits and lowercase letters.
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="md-form mb-5">
+                        <mat-form-field class="example-full-width">
+                            <input matInput placeholder="Email" [formControl]="emailEFormControl"
+                                [errorStateMatcher]="matcher" (change)="changeEVE()" [(ngModel)]="emailE">
+                            <mat-hint></mat-hint>
+                            <mat-error
+                                *ngIf="emailEFormControl.hasError('email') && !emailEFormControl.hasError('required')">
+                                Please enter a valid email address.
+                            </mat-error>
+                            <mat-error *ngIf="emailEFormControl.hasError('required')">
+                                Email is <strong>required</strong>.
+                            </mat-error>
+                            <span style="color: red;font-size: 10px;margin-top:0px"
+                                *ngIf="alreadyExistsE &&!emailEFormControl.hasError('email') && !emailEFormControl.hasError('required')">
+                                Email already exists. Try another.
+                            </span>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="md-form mb-5">
+                        <mat-checkbox color="primary" #cngPass><span style="font-size:14px">Change Password</span>
+                        </mat-checkbox>
+
+                        <!-- (click)="showPassField = !showPassField" -->
+                    </div>
+                    <div class="md-form mb-5" *ngIf="cngPass.checked">
+                        <mat-form-field>
+                            <input matInput placeholder="New Password" [type]="hideE ? 'password' : 'text'"
+                                [formControl]="passwordEFormControl" [errorStateMatcher]="matcher"
+                                [(ngModel)]="passwordE">
+                            <button mat-icon-button matSuffix (click)="hideE = !hideE"
+                                [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                                <mat-icon>{{hideE ? 'visibility_off' : 'visibility'}}</mat-icon>
+                            </button>
+                            <mat-error *ngIf="passwordEFormControl.hasError('required')">
+                                Password is <strong>required</strong>.
+                            </mat-error>
+                            <mat-error
+                                *ngIf="passwordEFormControl.hasError('pattern') && !passwordEFormControl.hasError('required')">
+                                Password must be atleast 6 characters.
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="md-form mb-5">
+                        <mat-form-field>
+                            <mat-label>Role</mat-label>
+                            <select disabled matNativeControl [(ngModel)]="selectedRoleE" name="role">
+                                <!-- <option value="" selected>--Select--</option> -->
+                                <!-- <option value >--Select--</option> -->
+                                <option *ngFor="let role of roles" [value]="role.value">
+                                    {{role.viewValue}}
+                                </option>
+                            </select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button (click)="onSubmitModalFormEdit()" class="btn btn-deep-orange" mat-stroked-button
+                        color="primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- edit modal end-->
+
+
+<router-outlet></router-outlet>

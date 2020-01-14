@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { HttpHeaders } from '@angular/common/http';
@@ -15,10 +15,26 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ElementRef } from '@angular/core';
 
-//select
+export interface Schedule {
+  value: string;
+  viewValue: string;
+}
+export interface MacI {
+  _id: string;
+  name: string;
+}
+export interface OperatorI {
+  _id: string;
+  username: string;
+}
 export interface Role {
   value: string;
   viewValue: string;
+}
+export interface UserI {
+  _id: string,
+  username: string;
+  role: string;
 }
 //email
 /** Error when invalid control is dirty, touched, or submitted. */
@@ -28,42 +44,47 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 }
-//user
-export interface UserI {
+
+export interface MaoI {
   _id: string,
+  oid: string;
+  mid: string;
   username: string;
-  role: string;
+  schedule: string;
+  activatedDate: string;
 }
 
 @Component({
-  selector: 'app-operator-list',
-  templateUrl: './operator-list.component.html',
-  styleUrls: ['./operator-list.component.css']
+  selector: 'app-operator-home',
+  templateUrl: './operator-home.component.html',
+  styleUrls: ['./operator-home.component.css']
 })
-export class OperatorListComponent implements OnInit {
+export class OperatorHomeComponent implements OnInit {
 
-  isAdmin:boolean=false;
+  model;
+  model2;
+  isAdmin: boolean = false;
   animal: string;
   name: string;
   welcomeMsg: any = '';
   auth_bol: Boolean = false;
   message: string;
-  helloMsg:string;
   //table
-  displayedColumns2: string[] = ['username', 'email', '_id', 'action'];
-  dataSource2: UserI[];
+  displayedColumns2: string[] = ['mid', 'oid', 'username', 'schedule', 'activatedDate'];
+  dataSource2: MaoI[];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   //table
   //async validation
-  @ViewChild('modalRegisterForm',{static:false}) modalRegisterForm: ElementRef;
-  @ViewChild('modalRegisterFormEdit',{static:false}) modalRegisterFormEdit: ElementRef;
+  @ViewChild('modalRegisterForm', { static: true }) modalRegisterForm: ElementRef;
+  @ViewChild('modalRegisterFormEdit', { static: true }) modalRegisterFormEdit: ElementRef;
 
   //constructor
   constructor(private http: HttpClient, private router: Router, private _gvs: GlobalVariablesService, public dialog: MatDialog, private modalService: NgbModal) { }
   //init
   ngOnInit() {
-    this.helloMsg = ' '+localStorage.getItem('uname')
+    console.log(this.model)
+    this.helloMsg = ' ' + localStorage.getItem('uname')
     this._gvs.currentMessage.subscribe(message => this.message = message)
     this.userAuthorization();
     //let x = this.http.get<UserI[]>("http://localhost:3001/login/").pipe(tap(console.log));
@@ -83,10 +104,10 @@ export class OperatorListComponent implements OnInit {
     // }, (err) => { console.log(err) })
   }
   userAuthorization() {
-    let resp_get_role = this.http.get('http://localhost:3001/login/getrole/'+localStorage.getItem('uid'))
+    let resp_get_role = this.http.get('http://localhost:3001/login/getrole/' + localStorage.getItem('uid'))
     resp_get_role.subscribe((data) => {
       console.log(data);
-      if(data.role=='admin'){
+      if (data.role == 'admin') {
         this.isAdmin = true;
       }
     }, (err) => { console.log(err) })
@@ -103,11 +124,11 @@ export class OperatorListComponent implements OnInit {
       console.log('access token dia login hoise')
       //-----
       if (this.auth_bol) {
-        let resp_get = this.http.get('http://localhost:3001/login/operator/', httpOptions)
-        resp_get.subscribe((data) => {
+        let resp_get = this.http.get('http://localhost:3001/login/mao/'+localStorage.getItem('uid'), httpOptions)
+        resp_get.subscribe((data: any) => {
           console.log('from access token')
           console.log(data);
-          this.dataSource2 = new MatTableDataSource<UserI>(data);
+          this.dataSource2 = new MatTableDataSource<MaoI>(data);
           this.dataSource2.paginator = this.paginator;
           this.dataSource2.sort = this.sort;
         }, (err) => { console.log('from access token error'); console.log(err) })
@@ -132,11 +153,11 @@ export class OperatorListComponent implements OnInit {
           console.log('refresh token dia login hoise')
           //-----
           if (this.auth_bol) {
-            let resp_get = this.http.get('http://localhost:3001/login/operator/', httpOptions)
-            resp_get.subscribe((data) => {
+            let resp_get = this.http.get('http://localhost:3001/login/mao/'+localStorage.getItem('uid'), httpOptions)
+            resp_get.subscribe((data: any) => {
               console.log('from refresh token')
               console.log(data);
-              this.dataSource2 = new MatTableDataSource<UserI>(data);
+              this.dataSource2 = new MatTableDataSource<MaoI>(data);
               this.dataSource2.paginator = this.paginator;
               this.dataSource2.sort = this.sort;
             }, (err) => { console.log('from refresh token error'); console.log(err) })
@@ -155,12 +176,27 @@ export class OperatorListComponent implements OnInit {
     localStorage.setItem('accessToken', '');
     localStorage.setItem('refreshToken', '');
     localStorage.setItem('uid', '');
-    localStorage.setItem('uname','');
+    localStorage.setItem('uname', '');
     this.router.navigate(['/login']);
   }
   applyFilter2(filterValue: string) {
     this.dataSource2.filter = filterValue.trim().toLowerCase();
   }
+  
+  pad(str) {
+    if (str.toString().length > 1) return str;
+    else return '0' + str;
+  }
+  sch = {
+    'a': "A shift 6:00AM to 2:00PM",
+    'b': "B shift 2:00PM to 10:00PM",
+    'c': "C shift 10:00PM to 6:00AM"
+  }
+  splitDate(x) {
+    let sp = x.split('T');
+    return sp[0];
+  }
+  //--------------------------------
   //username
   usernameFormControl = new FormControl('', [
     Validators.required,
@@ -195,35 +231,7 @@ export class OperatorListComponent implements OnInit {
   email: string;
   myForm: any;
   alreadyExists: boolean = false;
-  onSubmitModalForm() {
-    if (this.email != undefined && this.username != undefined && this.password != undefined
-      && !this.emailFormControl.hasError('email')
-      && !this.usernameFormControl.hasError('pattern')
-      && !this.passwordFormControl.hasError('pattern')) {
-      let resp_post = this.http.post('http://localhost:3001/login/emailvalidation', { email: this.email })
-      resp_post.subscribe((data) => {
-        console.log(data);
-        this.alreadyExists = data.found;
-        if (!this.alreadyExists) {
-          let resp_post_submit = this.http.post('http://localhost:3001/login/insert', { username: this.username, password: this.password, email: this.email, role: this.selectedRole })
-          resp_post_submit.subscribe((data) => {
-            this.username = null;
-            this.password = null;
-            this.email = null;
-            console.log('submission succesful')
-            console.log(data)
-            this.modalRegisterForm.nativeElement.click();
-            
-            //reloading page
-            this.userAuthorization();
-          }, (err) => { console.log(err) })
-        }
-        //this.modalRegisterForm.nativeElement.click();
-        //console.log(this.alreadyExists)
-      }, (err) => { console.log(err) })
-    }
 
-  }
   changeEV() {
     this.alreadyExists = false;
   }
@@ -360,7 +368,9 @@ export class OperatorListComponent implements OnInit {
   }
   tempUsername: string;
   tempID: string;
-  getValueForEdit(_id) {
+  getValueForEdit() {
+    console.log('calling')
+    let _id = localStorage.getItem('uid')
     this.alreadyExistsE=false;
     let resp_post = this.http.post('http://localhost:3001/login/getuser', { id: _id, role: 'operator' })
     resp_post.subscribe((data) => {
@@ -371,11 +381,5 @@ export class OperatorListComponent implements OnInit {
       this.emailE = data[0].email;
     }, (err) => { console.log(err) })
   }
-  delete_user(_id) {
-    let resp_post = this.http.delete('http://localhost:3001/login/deleteuser/'+_id)
-    resp_post.subscribe((data) => {
-      console.log(data);
-      this.userAuthorization();
-    }, (err) => { console.log(err) })
-  }
+
 }

@@ -326,4 +326,5 @@ export class MachineAssigneToOperatorComponent implements OnInit {
   }
 
 
+
 }
